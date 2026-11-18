@@ -1,0 +1,171 @@
+## SPDX-License-Identifier: GPL-2.0-only
+
+chip soc/intel/skylake
+
+	device domain 0 on
+	subsystemid 0x1028 0x06b9 inherit
+		# SLOT2 x16 (PEG, bus 01) - confirmed: 00:01.0 LnkCap Width x16
+		device ref peg0 on
+			register "Peg0MaxLinkWidth" = "Peg0_x16"
+
+			# NOTE: the 3050 and 5040 variants set PcieRpClkReqSupport[0],
+			# PcieRpClkReqNumber[0] and PcieRpClkSrcNumber[0] here. Those
+			# arrays index PCH root ports 1..20 (index = N-1), so index 0 is
+			# pcie_rp1 -- not the PEG. On those boards rp1 is unused so the
+			# mistake is invisible. On the 7040 MT rp1 drives the PCI bridge,
+			# so index 0 is claimed below and setting it here is both wrong
+			# and a duplicate-key build error.
+			smbios_slot_desc "SlotTypePciExpressGen3X16" "SlotLengthLong" "SLOT2" "SlotDataBusWidth16X"
+		end
+
+		device ref south_xhci on
+			# Port set established from this unit's own hardware, not copied:
+			#   xHCI Supported Protocol caps: USB2 = ports 1..16, USB3 = ports 17..26
+			#   Linux usb port connect_type (bus1 = USB2, bus2 = USB3):
+			#     usb1-port1..10  hotplug     -> usb2_ports[0..9]   wired
+			#     usb1-port12,13  hardwired   -> usb2_ports[11],[12] internal permanent
+			#     usb1-port11,14,15,16        -> not used
+			#     usb2-port1..6   hotplug     -> usb3_ports[0..5]   wired
+			#     usb2-port7..10              -> not used
+			# This independently reproduces the 5040 SFF port set, so the enable list
+			# below is confirmed correct for this board rather than merely inherited.
+			#
+			# USB3 connector <-> USB2 companion pairing, from the kernel peer table.
+			# NOTE it is not 1:1 - a USB 3.0 socket is one USB2 port plus one USB3 port,
+			# and the two halves of a socket should share an overcurrent pin:
+			#   usb3[0]->usb2[0]  usb3[1]->usb2[1]  usb3[2]->usb2[3]
+			#   usb3[3]->usb2[4]  usb3[4]->usb2[6]  usb3[5]->usb2[2]
+			# USB2-only sockets are therefore usb2_ports[5],[7],[8],[9] - four of them,
+			# matching Dell's spec of 2 front + 2 rear USB 2.0 (6 USB 3.0: 4 rear, 2 front).
+			#
+			# OC pins are inherited from the 5040 SFF - still not directly readable
+			# (the xHCI MMIO exposes only the extended-capability list plus
+			# undocumented Intel vendor blocks) - but now strongly corroborated:
+			# for all SIX USB3 sockets, the 5040's OC pin for the SS half matches its
+			# OC pin for the HS half under OUR independently measured pairing
+			# (usb3[0]/usb2[0], [1]/[1], [2]/[3], [3]/[4], [4]/[6], [5]/[2]).
+			# A table that did not correspond to this board would be very unlikely to
+			# stay self-consistent across a non-1:1 pairing six times over.
+			# Residual risk: the OC *pin identity* still assumes the 7040 MT wires its
+			# current sense the same way as the 5040 SFF. Untested.
+			# Socket -> index map MEASURED on this board by walking every connector
+			# under the OEM firmware and reading the enumerated xHCI port
+			# (see README 0.9). Rear blue row is left-to-right usb3 2,3,4,5.
+			# Two entries are by elimination, marked (elim): the broken front-blue
+			# socket and the left rear black socket, each being the only index and
+			# the only socket left unclaimed.
+			register "usb2_ports" = "{
+				[0]  = USB2_PORT_MID(OC0),	// front blue #2 (broken socket), HS half (elim)
+				[1]  = USB2_PORT_MID(OC0),	// front blue #1, HS half
+				[2]  = USB2_PORT_MID(OC2),	// rear blue #4 (rightmost), HS half
+				[3]  = USB2_PORT_MID(OC1),	// rear blue #1 (leftmost), HS half
+				[4]  = USB2_PORT_MID(OC1),	// rear blue #2, HS half
+				[5]  = USB2_PORT_MID(OC3),	// rear black, left (elim)
+				[6]  = USB2_PORT_MID(OC2),	// rear blue #3, HS half
+				[7]  = USB2_PORT_MID(OC3),	// rear black, right (nearest RJ45)
+				[8]  = USB2_PORT_MID(OC4),	// front black #2
+				[9]  = USB2_PORT_MID(OC6),	// front black #1 (leftmost)
+				[11] = USB2_PORT_MID(OC5),	// internal, connect_type=hardwired
+				[12] = USB2_PORT_MID(OC5),	// internal, connect_type=hardwired
+			}"
+			register "usb3_ports" = "{
+				[0] = USB3_PORT_DEFAULT(OC0),	// front blue #2 (broken socket) (elim)
+				[1] = USB3_PORT_DEFAULT(OC0),	// front blue #1
+				[2] = USB3_PORT_DEFAULT(OC1),	// rear blue #1 (leftmost)
+				[3] = USB3_PORT_DEFAULT(OC1),	// rear blue #2
+				[4] = USB3_PORT_DEFAULT(OC2),	// rear blue #3
+				[5] = USB3_PORT_DEFAULT(OC2),	// rear blue #4 (rightmost)
+			}"
+		end
+
+		# Four SATA connectors on the board: SATA0/1/2/3 (layout callouts 21/15/20/16).
+		# Ground truth from the running OEM firmware:
+		#   ahci 0000:00:17.0: 4/4 ports implemented (port mask 0xf)  -> ports 0..3
+		# The 5040 SFF variant enables [0][1][2][4]; port 4 is NOT implemented here.
+		# GPP_F1 is strapped SATAXPCIE4 and GPP_F6 SATA_DEVSLP4, i.e. the port-4 lane
+		# is muxed to PCIe for SLOT5_M.2 - which is why it is absent from the mask.
+		device ref sata on
+			register "SataSalpSupport"			= "1"
+			register "SataPortsEnable[0]"			= "1"
+			register "SataPortsEnable[1]"			= "1"
+			register "SataPortsEnable[2]"			= "1"
+			register "SataPortsEnable[3]"			= "1"
+		end
+
+		# SLOT5_M.2 - confirmed: 00:1b.0 (rp17), LnkCap x4, bus 02 -> NVMe
+		device ref pcie_rp17 on
+			# The 5040 SFF uses clkreq/clksrc 3. On this board the GPIO dump shows
+			# exactly one PCIe clock-request pad in native mode - GPP_B7 = SRCCLKREQ2# -
+			# and the M.2 is the only populated PCH-attached PCIe device, so 2 is the
+			# evidence-backed number. Verify at bring-up: a wrong CLKREQ mapping usually
+			# shows up as the NVMe dropping out under ASPM / L1 substates.
+			register "PcieRpClkReqSupport[16]"		= "true"
+			register "PcieRpClkReqNumber[16]"		= "2"
+			register "PcieRpAdvancedErrorReporting[16]"	= "1"
+			register "PcieRpLtrEnable[16]"			= "true"
+			register "PcieRpClkSrcNumber[16]"		= "2"
+			register "PcieRpHotPlug[16]"			= "1"
+			smbios_slot_desc "SlotTypeM2Socket3" "SlotLengthOther" "SLOT5_M.2/M 2280" "SlotDataBusWidth4X"
+		end
+
+		# SLOT3 (legacy 32-bit PCI) sits behind a TI XIO2001 PCIe-to-PCI bridge.
+		# Confirmed: 00:1c.0 (rp1), LnkCap x1, bus 03 -> 03:00.0 [104c:8240] -> bus 04
+		device ref pcie_rp1 on
+			register "PcieRpClkReqSupport[0]"		= "false"
+			smbios_slot_desc "SlotTypePci" "SlotLengthLong" "SLOT3" "SlotDataBusWidth32X"
+		end
+
+		# SLOT1 (PCIe x1) - OEM SMBIOS Type 9 table (RVA 0x23d0): 00:1c.6 (rp7)
+		device ref pcie_rp7 on
+			register "PcieRpClkReqSupport[6]"		= "false"
+			register "PcieRpHotPlug[6]"			= "1"
+			smbios_slot_desc "SlotTypePciExpressGen3X1" "SlotLengthShort" "SLOT1" "SlotDataBusWidth1X"
+		end
+
+		# SLOT4 (PCIe x16 mechanical / x4 electrical) - OEM SMBIOS Type 9 table: 00:1d.0 (rp9)
+		device ref pcie_rp9 on
+			register "PcieRpClkReqSupport[8]"		= "false"
+			register "PcieRpHotPlug[8]"			= "1"
+			smbios_slot_desc "SlotTypePciExpressGen3X4" "SlotLengthLong" "SLOT4" "SlotDataBusWidth4X"
+		end
+
+		# PCH LPSS UART0 (GPP_C8/C9) is unused on the 7040 MT; console is on
+		# the SCH555x LPC UART at 0x3f8.
+		device ref uart0 off
+			register "SerialIoDevMode[PchSerialIoIndexUart0]" = "PchSerialIoDisabled"
+		end
+
+		device ref lpc_espi on
+			# I/O decode for EMI/Runtime registers.
+			# Verified byte-identical to this unit's live
+			# `setpci -s 00:1f.0 0x84.l / 0x88.l / 0x8c.l / 0x90.l`.
+			register "gen1_dec" = "0x007c0681"
+			register "gen2_dec" = "0x007c0901"
+			register "gen3_dec" = "0x003c07e1"
+			register "gen4_dec" = "0x007c0a01"
+
+			chip superio/smsc/sch555x
+
+				device pnp 2e.1 on			# 8042
+					io 0x60 = 0x60
+					irq 0x0f = 0
+					irq 0x70 = 1
+					irq 0x72 = 12
+				end
+
+			end
+
+			# This unit reports a TPM 1.2 (/sys/class/tpm/tpm0 major = 1),
+			# unlike the 5040 SFF which shipped TPM 2.0.
+			chip drivers/pc80/tpm
+				device pnp 0c31.0 on end
+			end
+
+		end
+
+		# I219-LM. GPD11 = LANPHYPC and GPD2 = LAN_WAKE# are both native in the OEM
+		# pad map, so PHY power-control and WoL are wired. (The 5040 SFF reports
+		# onboard WoL not working - re-test here rather than assuming we inherit it.)
+		device ref gbe on end
+	end
+end

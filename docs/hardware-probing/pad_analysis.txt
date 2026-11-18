@@ -1,0 +1,165 @@
+
+===== GPIO OUTPUTS  (LEDs / enables / resets) (108) =====
+GPP_A8     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A12    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A16    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A17    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A18    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A19    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A20    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A21    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A22    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_A23    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B0     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B1     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B3     OUTPUT   GPIO           rst=RSMRST/POW  pull=NONE    tx=1 rx=0 
+GPP_B4     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B5     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B6     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B8     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B10    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B11    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B17    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B19    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_B20    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C8     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C9     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C10    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C11    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C12    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C13    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C14    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C15    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C18    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C19    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C20    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C21    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_C22    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D0     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D1     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D2     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D3     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D4     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D7     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D8     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D9     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D10    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D11    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D12    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D13    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D14    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D15    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D16    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D17    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D18    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D19    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D20    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D21    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D22    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_D23    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_E0     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_E1     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_E2     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F0     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F2     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F3     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F4     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F5     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F7     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F9     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F10    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F11    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F12    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F13    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F18    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F19    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F20    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F21    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F22    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_F23    OUTPUT   GPIO           rst=RESERVED(0b11) pull=NONE    tx=1 rx=0 
+GPP_G11    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_G15    OUTPUT   GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G16    OUTPUT   GPIO           rst=DEEP        pull=NONE    tx=1 rx=0 
+GPP_G18    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_G19    OUTPUT   GPIO           rst=DEEP        pull=NONE    tx=1 rx=0 
+GPP_G20    OUTPUT   GPIO           rst=DEEP        pull=NONE    tx=1 rx=0 
+GPP_G23    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H0     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H1     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H2     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H3     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H4     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H5     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H6     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H7     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H8     OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H10    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H11    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H12    OUTPUT   GPIO           rst=PLTRST      pull=DN_20K  tx=0 rx=0 
+GPP_H13    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=1 rx=0 
+GPP_H14    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H15    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H16    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H17    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H18    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H19    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H20    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H21    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H22    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPP_H23    OUTPUT   GPIO           rst=PLTRST      pull=NONE    tx=0 rx=0 
+GPD7       OUTPUT   GPIO           rst=RESERVED(0b11) pull=NONE    tx=1 rx=0 
+
+===== GPIO INPUTS   (straps / presence / buttons) (31) =====
+GPP_B9     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_B15    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_B16    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_C23    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_D5     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_D6     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_E3     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_E4     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_E5     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_E6     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_E7     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_F8     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_F14    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G0     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G1     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_G2     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_G3     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_G4     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G5     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G6     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G7     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G8     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G9     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G10    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G12    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_G13    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_G14    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+GPP_G17    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 route=C
+GPP_G21    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_G22    INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=1 
+GPP_H9     INPUT    GPIO           rst=DEEP        pull=NONE    tx=0 rx=0 
+
+===== GPIO BIDIRECTIONAL (0) =====
+
+===== PARKED (unused) : 0 =====
+===== NATIVE FUNCTION : 65 =====
+
+=== reserved reset-config pads (need hand fix) ===
+   GPP_C6 RESERVED 0xffffffff
+   GPP_C7 RESERVED 0xffffffff
+   GPP_F23 GPIO 0xc4000201
+   GPD0 BATLOW# 0xc4000502
+   GPD1 ACPRESENT 0xc4000502
+   GPD2 LAN_WAKE# 0xc4000502
+   GPD3 PWRBTN# 0xc4000502
+   GPD4 SLP_S3# 0xc4000500
+   GPD5 SLP_S4# 0xc4000500
+   GPD6 SLP_A# 0xc4000500
+   GPD7 GPIO 0xc4000201
+   GPD8 SUSCLK 0xc4000500
+   GPD9 SLP_WLAN# 0xc4000500
+   GPD10 SLP_S5# 0xc4000500
+   GPD11 LANPHYPC 0xc4000500

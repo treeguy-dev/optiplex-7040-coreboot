@@ -1,0 +1,7 @@
+## SPDX-License-Identifier: GPL-2.0-only
+
+config BOARD_DELL_OPTIPLEX_3050
+	bool "OptiPlex 3050 Micro"
+
+config BOARD_DELL_OPTIPLEX_7040
+	bool "OptiPlex 7040 MT"

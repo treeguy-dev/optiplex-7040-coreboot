@@ -1,0 +1,13 @@
+# Never commit full ROM images or proprietary Intel / OEM firmware blobs
+*.rom
+*.rom.new
+*.bin
+!board/src/mainboard/dell/sklkbl_desktops/variants/optiplex_7040/data.vbt
+
+# Build directories and logs
+coreboot/
+build/
+__pycache__/
+*.pyc
+*.log
+.DS_Store

@@ -1,0 +1,42 @@
+superiotool r
+Found Aspeed AST2400 (id=0x00) at 0x2e
+Register dump:
+idx 20 21 22 23 24 25 26 27  28 29 2a 2b 2c 2d 2e 2f
+val 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+def 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
+LDN 0x02 (SUART1)
+idx 30 60 61 70 71 f0
+val 00 00 00 00 00 00
+def 00 03 f8 04 02 RR
+LDN 0x03 (SUART2)
+idx 30 60 61 70 71 f0
+val 00 00 00 00 00 00
+def 00 02 f8 03 02 00
+LDN 0x04 (SWC)
+idx 30 60 61 62 63 64 65 66  67 70 71
+val 00 00 00 00 00 00 00 00  00 00 00
+def 00 08 e6 08 e0 08 e4 08  e8 09 01
+LDN 0x05 (Keyboard config (KBC))
+idx 30 60 61 62 63 70 71 72  73 f0
+val 00 00 00 00 00 00 00 00  00 00
+def 00 00 60 00 64 01 02 0c  02 83
+LDN 0x07 (GPIO)
+idx 30 38 70 71
+val 00 00 00 00
+def 00 00 0b 01
+LDN 0x0b (SUART3)
+idx 30 60 61 70 71 f0
+val 00 00 00 00 00 00
+def 00 03 e8 06 02 00
+LDN 0x0c (SUART4)
+idx 30 60 61 70 71 f0
+val 00 00 00 00 00 00
+def 00 02 e8 05 02 00
+LDN 0x0d (iLPC2AHB)
+idx 30 70 71 f0 f1 f2 f3 f4  f5 f6 f7 f8 fe
+val 00 00 00 00 00 00 00 00  00 00 00 00 00
+def 00 09 01 NA NA NA NA NA  NA NA NA 00 00
+LDN 0x0e (Mailbox)
+idx 30 60 61 70 71
+val 00 00 00 00 00
+def 00 08 c0 09 01

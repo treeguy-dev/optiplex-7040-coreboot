@@ -1,0 +1,42 @@
+# Workstation-Bootmenu-Sample GRUB2 Theme (Proof-of-Concept) for Dell OptiPlex 7040 MT (Coreboot)
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#0a0e16"
+terminal-box: "terminal_box_*.png"
+terminal-font: "Workstation Mono Regular 18"
+terminal-left: "10%"
+terminal-top: "12%"
+terminal-width: "80%"
+terminal-height: "76%"
+
++ boot_menu {
+    left = 157
+    top = 276
+    width = 1606
+    height = 435
+    item_font = "Workstation Sans Regular 20"
+    item_color = "#cbd5e1"
+    selected_item_font = "Workstation Sans Bold 20"
+    selected_item_color = "#ffffff"
+    item_height = 86
+    item_padding = 0
+    item_spacing = 1
+    icon_width = 28
+    icon_height = 28
+    item_icon_space = 18
+    item_pixmap_style = "item_*.png"
+    selected_item_pixmap_style = "select_*.png"
+    scrollbar = false
+}
+
++ label {
+    id = "__timeout__"
+    left = 1400
+    top = 1030
+    width = 464
+    height = 28
+    align = "right"
+    font = "Workstation Mono Regular 18"
+    color = "#38bdf8"
+    text = "Auto-boot: %ds"
+}

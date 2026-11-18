@@ -1,0 +1,283 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+
+#include <soc/gpe.h>
+#include <soc/gpio.h>
+#include "../../../include/variant/gpio.h"
+
+/*
+ * Pad configuration read from this unit's own stock firmware with
+ *   inteltool -g   (requires iomem=relaxed)
+ * and translated with coreboot's util/intelp2m -p snr.
+ * Source dump: inteltool_gpio_7040.txt  (204 pads)
+ *   65 native-function | 100 parked-low (unused) | 39 board-specific | 2 unreadable
+ *
+ * Long _PAD_CFG_STRUCT() entries are kept verbatim where the OEM configuration
+ * has no exact short-macro equivalent; native-function pads are folded into
+ * PAD_CFG_NF(), which is byte-identical because PAD_IOSSTATE(TxLASTRxE) == 0.
+ *
+ * KNOWN DEVIATION - GPP_F23:
+ *   The OEM programs pad reset config 0b11. For GPP communities Skylake's
+ *   rst_map[] (src/soc/intel/skylake/gpio.c) only defines chipset values
+ *   0b00=RSMRST, 0b01=DEEP, 0b10=PLTRST - 0b11 has no logical mapping.
+ *   intelp2m warns and falls back to RSMRST, which re-encodes as 0b00.
+ *   The pad is a static high output, so this is expected to be harmless,
+ *   but it is NOT a faithful reproduction of the OEM value. Re-check if
+ *   anything downstream of GPP_F23 misbehaves.
+ *   (GPD0..GPD11 also read 0b11, but that IS valid there - community 2 uses
+ *   rst_map_com2[], where 0b11 == RSMRST. Those are reproduced exactly.)
+ *
+ * GPP_C6/GPP_C7 read back 0xffffffff on this SKU - the registers are not
+ * backed. They are left unconfigured, matching the OptiPlex 5040 SFF port.
+ */
+static const struct pad_config gpio_table[] = {
+	/* ------- GPIO Community 0 ------- */
+
+	/* ------- GPIO Group GPP_A ------- */
+	PAD_CFG_NF(GPP_A0, NONE, PLTRST, NF1),	/* RCIN# */
+	PAD_CFG_NF(GPP_A1, UP_20K, PLTRST, NF1),	/* LAD0 */
+	PAD_CFG_NF(GPP_A2, UP_20K, PLTRST, NF1),	/* LAD1 */
+	PAD_CFG_NF(GPP_A3, UP_20K, PLTRST, NF1),	/* LAD2 */
+	PAD_CFG_NF(GPP_A4, UP_20K, PLTRST, NF1),	/* LAD3 */
+	PAD_CFG_NF(GPP_A5, NONE, PLTRST, NF1),	/* LFRAME# */
+	PAD_CFG_NF(GPP_A6, NONE, PLTRST, NF1),	/* SERIRQ */
+	PAD_CFG_NF(GPP_A7, NONE, PLTRST, NF1),	/* PIRQA# */
+	PAD_CFG_GPO(GPP_A8, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_A9, NONE, PLTRST, NF1),	/* CLKOUT_LPC0 */
+	PAD_CFG_NF(GPP_A10, NONE, PLTRST, NF1),	/* CLKOUT_LPC1 */
+	PAD_CFG_NF(GPP_A11, UP_20K, PLTRST, NF1),	/* PME# */
+	PAD_CFG_GPO(GPP_A12, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_A13, NONE, PLTRST, NF1),	/* SUSWARN#/SUSPWRDNACK */
+	PAD_CFG_NF(GPP_A14, NONE, PLTRST, NF1),	/* SUS_STAT# */
+	PAD_CFG_NF(GPP_A15, UP_20K, PLTRST, NF1),	/* SUS_ACK# */
+	PAD_CFG_GPO(GPP_A16, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A17, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A18, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A19, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A20, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A21, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A22, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_A23, 0, PLTRST),	/* GPIO */
+
+	/* ------- GPIO Group GPP_B ------- */
+	PAD_CFG_GPO(GPP_B0, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_B1, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_B2, NONE, PLTRST, NF1),	/* VRALERT# */
+	PAD_CFG_GPO(GPP_B3, 1, RSMRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_B4, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_B5, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_B6, 0, PLTRST),	/* GPIO */
+	/* SRCCLKREQ2# - the only PCIe clkreq in native mode; see overridetree rp17 */
+	PAD_CFG_NF(GPP_B7, NONE, DEEP, NF1),	/* SRCCLKREQ2# */
+	PAD_CFG_GPO(GPP_B8, 0, PLTRST),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_B9, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPO(GPP_B10, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_B11, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_B12, NONE, PLTRST, NF1),	/* SLP_S0# */
+	PAD_CFG_NF(GPP_B13, NONE, PLTRST, NF1),	/* PLTRST# */
+	/* SPKR - internal speaker (board callout 17) */
+	PAD_CFG_NF(GPP_B14, DN_20K, PLTRST, NF1),	/* SPKR */
+	_PAD_CFG_STRUCT(GPP_B15, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_B16, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPO(GPP_B17, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_B18, DN_20K, PLTRST, NF1),	/* GSPIO_MOSI */
+	PAD_CFG_GPO(GPP_B19, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_B20, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_B21, NONE, PLTRST, NF1),	/* GSPI1_MISO */
+	PAD_CFG_NF(GPP_B22, DN_20K, PLTRST, NF1),	/* GSPI1_MOSI */
+	PAD_CFG_NF(GPP_B23, DN_20K, PLTRST, NF2),	/* PCHHOT# */
+
+	/* ------- GPIO Community 1 ------- */
+
+	/* ------- GPIO Group GPP_C ------- */
+	PAD_CFG_NF(GPP_C0, NONE, PLTRST, NF1),	/* SMBCLK */
+	PAD_CFG_NF(GPP_C1, NONE, PLTRST, NF1),	/* SMBDATA */
+	PAD_CFG_NF(GPP_C2, DN_20K, DEEP, NF1),	/* SMBALERT# */
+	PAD_CFG_NF(GPP_C3, NONE, PLTRST, NF1),	/* SML0CLK */
+	PAD_CFG_NF(GPP_C4, NONE, PLTRST, NF1),	/* SML0DATA */
+	PAD_CFG_NF(GPP_C5, DN_20K, PLTRST, NF1),	/* SML0ALERT# */
+	/* GPP_C6 - RESERVED */
+	/* GPP_C7 - RESERVED */
+	PAD_CFG_GPO(GPP_C8, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C9, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C10, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C11, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C12, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C13, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C14, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C15, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_C16, NONE, PLTRST, NF1),	/* I2C0_SDA */
+	PAD_CFG_NF(GPP_C17, NONE, PLTRST, NF1),	/* I2C0_SCL */
+	PAD_CFG_GPO(GPP_C18, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C19, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C20, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C21, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_C22, 0, PLTRST),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_C23, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+
+	/* ------- GPIO Group GPP_D ------- */
+	PAD_CFG_GPO(GPP_D0, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D1, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D2, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D3, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D4, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_D5, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_D6, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPO(GPP_D7, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D8, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D9, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D10, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D11, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D12, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D13, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D14, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D15, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D16, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D17, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D18, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D19, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D20, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D21, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D22, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_D23, 0, PLTRST),	/* GPIO */
+
+	/* ------- GPIO Group GPP_E ------- */
+	PAD_CFG_GPO(GPP_E0, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_E1, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_E2, 0, PLTRST),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_E3, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_E4, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_E5, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_E6, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_E7, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	/* SATA_LED# - front-panel HDD activity LED */
+	PAD_CFG_NF(GPP_E8, NONE, PLTRST, NF1),	/* SATA_LED# */
+	PAD_CFG_NF(GPP_E9, UP_20K, PLTRST, NF1),	/* USB_OC0# */
+	PAD_CFG_NF(GPP_E10, UP_20K, PLTRST, NF1),	/* USB_OC1# */
+	PAD_CFG_NF(GPP_E11, UP_20K, PLTRST, NF1),	/* USB_OC2# */
+	PAD_CFG_NF(GPP_E12, UP_20K, PLTRST, NF1),	/* USB_OC3# */
+
+	/* ------- GPIO Group GPP_F ------- */
+	PAD_CFG_GPO(GPP_F0, 0, PLTRST),	/* GPIO */
+	/* SATAXPCIE4 - port-4 lane muxed to PCIe for SLOT5_M.2 */
+	PAD_CFG_NF(GPP_F1, NONE, PLTRST, NF1),	/* SATAXPCIE4 */
+	PAD_CFG_GPO(GPP_F2, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F3, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F4, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F5, 0, PLTRST),	/* GPIO */
+	PAD_CFG_NF(GPP_F6, NONE, PLTRST, NF1),	/* SATA_DEVSLP4 */
+	PAD_CFG_GPO(GPP_F7, 0, PLTRST),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_F8, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPO(GPP_F9, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F10, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F11, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F12, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F13, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_F14, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_NF(GPP_F15, NONE, PLTRST, NF1),	/* USB_OC4# */
+	PAD_CFG_NF(GPP_F16, NONE, PLTRST, NF1),	/* USB_OC5# */
+	PAD_CFG_NF(GPP_F17, NONE, PLTRST, NF1),	/* USB_OC6# */
+	PAD_CFG_GPO(GPP_F18, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F19, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F20, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F21, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F22, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_F23, 1, RSMRST),	/* GPIO */
+
+	/* ------- GPIO Group GPP_G ------- */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G0, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G1, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	/*
+	 * GPP_G2/GPP_G3 are the Dell form-factor strap pins. ramstage.c reads them as
+	 *   form_fac_id = gpio_get(GPP_G2) | gpio_get(GPP_G3) << 1
+	 * to pick the SCH5555 fan/HWM table. Both read 1 on this unit (DW0 bit1 set in
+	 * the inteltool dump), so form_fac_id = 3 -> the default: branch -> HWM_TAB_MT,
+	 * which is correct for the Mini Tower. Must stay GPI or fan control breaks.
+	 */
+	_PAD_CFG_STRUCT(GPP_G2, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G3, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G4, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G5, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G6, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G7, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G8, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G9, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G10, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPO(GPP_G11, 0, PLTRST),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G12, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G13, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_G14, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPO(GPP_G15, 0, DEEP),	/* GPIO */
+	PAD_CFG_GPO(GPP_G16, 1, DEEP),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G17, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(EDGE_SINGLE) | PAD_IRQ_ROUTE(SCI) | PAD_RX_POL(INVERT) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPO(GPP_G18, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_G19, 1, DEEP),	/* GPIO */
+	PAD_CFG_GPO(GPP_G20, 1, DEEP),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G21, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	_PAD_CFG_STRUCT(GPP_G22, PAD_FUNC(GPIO) | PAD_RESET(DEEP) | PAD_TRIG(OFF) | PAD_BUF(TX_DISABLE), 0),	/* GPIO */
+	PAD_CFG_GPO(GPP_G23, 0, PLTRST),	/* GPIO */
+
+	/* ------- GPIO Group GPP_H ------- */
+	PAD_CFG_GPO(GPP_H0, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H1, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H2, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H3, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H4, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H5, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H6, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H7, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H8, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPI_TRIG_OWN(GPP_H9, NONE, DEEP, OFF, ACPI),	/* GPIO */
+	PAD_CFG_GPO(GPP_H10, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H11, 0, PLTRST),	/* GPIO */
+	PAD_CFG_TERM_GPO(GPP_H12, 0, DN_20K, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H13, 1, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H14, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H15, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H16, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H17, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H18, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H19, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H20, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H21, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H22, 0, PLTRST),	/* GPIO */
+	PAD_CFG_GPO(GPP_H23, 0, PLTRST),	/* GPIO */
+
+	/* ------- GPIO Community 2 ------- */
+
+	/* -------- GPIO Group GPD -------- */
+	PAD_CFG_NF(GPD0, NONE, RSMRST, NF1),	/* BATLOW# */
+	PAD_CFG_NF(GPD1, NONE, RSMRST, NF1),	/* ACPRESENT */
+	PAD_CFG_NF(GPD2, NONE, RSMRST, NF1),	/* LAN_WAKE# */
+	/* PWRBTN# - power switch connector (callout 13) */
+	PAD_CFG_NF(GPD3, UP_20K, RSMRST, NF1),	/* PWRBTN# */
+	PAD_CFG_NF(GPD4, NONE, RSMRST, NF1),	/* SLP_S3# */
+	PAD_CFG_NF(GPD5, NONE, RSMRST, NF1),	/* SLP_S4# */
+	PAD_CFG_NF(GPD6, NONE, RSMRST, NF1),	/* SLP_A# */
+	PAD_CFG_GPO(GPD7, 1, RSMRST),	/* GPIO */
+	PAD_CFG_NF(GPD8, NONE, RSMRST, NF1),	/* SUSCLK */
+	PAD_CFG_NF(GPD9, NONE, RSMRST, NF1),	/* SLP_WLAN# */
+	PAD_CFG_NF(GPD10, NONE, RSMRST, NF1),	/* SLP_S5# */
+	/* LANPHYPC - I219-LM PHY power control */
+	PAD_CFG_NF(GPD11, NONE, RSMRST, NF1),	/* LANPHYPC */
+
+	/* ------- GPIO Community 3 ------- */
+
+	/* ------- GPIO Group GPP_I ------- */
+	PAD_CFG_NF(GPP_I0, NONE, PLTRST, NF1),	/* DDPB_HPD0 */
+	PAD_CFG_NF(GPP_I1, NONE, PLTRST, NF1),	/* DDPC_HPD1 */
+	PAD_CFG_NF(GPP_I2, NONE, PLTRST, NF1),	/* DDPD_HPD2 */
+	/* DDPE_HPD3 - VGA daughter board (callout 5), needs DDI-E bifurcation */
+	PAD_CFG_NF(GPP_I3, NONE, PLTRST, NF1),	/* DDPE_HPD3 */
+	PAD_CFG_NF(GPP_I4, NONE, PLTRST, NF1),	/* EDP_HPD */
+	PAD_CFG_NF(GPP_I5, NONE, PLTRST, NF1),	/* DDPB_CTRLCLK */
+	PAD_CFG_NF(GPP_I6, DN_20K, PLTRST, NF1),	/* DDPB_CTRLDATA */
+	PAD_CFG_NF(GPP_I7, NONE, PLTRST, NF1),	/* DDPC_CTRLCLK */
+	PAD_CFG_NF(GPP_I8, DN_20K, PLTRST, NF1),	/* DDPC_CTRLDATA */
+	PAD_CFG_NF(GPP_I9, NONE, PLTRST, NF1),	/* DDPD_CTRLCLK */
+	PAD_CFG_NF(GPP_I10, DN_20K, PLTRST, NF1),	/* DDPD_CTRLDATA */
+};
+
+void variant_configure_gpios(void)
+{
+	gpio_configure_pads(gpio_table, ARRAY_SIZE(gpio_table));
+}
